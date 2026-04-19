@@ -1,0 +1,172 @@
+-- ================================
+-- Basic Settings
+-- ================================
+
+-- Clipboard integration
+vim.opt.clipboard = 'unnamedplus'
+
+-- Completion menu behavior
+vim.opt.completeopt = { 'noinsert', 'menuone', 'noselect' }
+
+-- Visual enhancements
+vim.opt.cursorline = true          -- Highlight current line
+vim.opt.cursorcolumn = true        -- Highlight current column
+vim.opt.number = true              -- Show line numbers
+vim.opt.relativenumber = true      -- Show relative line numbers
+-- vim.opt.colorcolumn = '80'         -- Column guide at 80 characters
+vim.opt.title = true               -- Show file title in terminal
+
+-- Editing behavior
+vim.opt.hidden = true              -- Allow switching buffers without saving
+vim.opt.autoindent = true          -- Auto-indent new lines
+vim.opt.mouse = 'a'                -- Enable mouse support
+vim.opt.inccommand = 'split'       -- Show live preview of substitutions
+
+-- Search behavior
+vim.opt.ignorecase = true          -- Case insensitive search
+vim.opt.smartcase = true           -- Case sensitive if uppercase letters present
+
+-- Window behavior
+vim.opt.splitbelow = true          -- More natural split directions
+vim.opt.splitright = true
+
+-- Performance
+vim.opt.ttyfast = true             -- Faster scrolling
+
+-- File type detection
+vim.cmd('filetype plugin indent on')
+vim.cmd('syntax on')
+
+-- Interface enhancements
+vim.opt.wildmenu = true            -- Enhanced command completion
+vim.opt.wildmode = 'longest:full,full'  -- Complete longest common string, then full matches
+
+-- ================================
+-- Plugin Management
+-- ================================
+
+local vim_plug_path = vim.fn.stdpath('data') .. '/plugged'
+
+vim.call('plug#begin', vim_plug_path)
+
+-- Color scheme
+vim.cmd([[Plug 'morhetz/gruvbox']])
+
+-- Status line and interface
+vim.cmd([[Plug 'vim-airline/vim-airline']])
+vim.cmd([[Plug 'vim-airline/vim-airline-themes']])
+vim.cmd([[Plug 'ryanoasis/vim-devicons']])
+
+-- File management
+vim.cmd([[Plug 'scrooloose/nerdtree']])
+
+-- Code editing
+vim.cmd([[Plug 'scrooloose/nerdcommenter']])
+vim.cmd([[Plug 'jiangmiao/auto-pairs']])
+vim.cmd([[Plug 'sheerun/vim-polyglot']])
+
+-- Code intelligence
+vim.cmd([[Plug 'neoclide/coc.nvim', {'branch': 'release'}]])
+
+-- Git integration
+vim.cmd([[Plug 'tpope/vim-fugitive']])
+
+-- Fuzzy finder
+vim.cmd([[Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }]])
+vim.cmd([[Plug 'junegunn/fzf.vim']])
+
+vim.call('plug#end')
+
+-- ================================
+-- Plugin Configuration
+-- ================================
+
+-- Color scheme
+vim.cmd('colorscheme gruvbox')
+vim.opt.background = 'dark'
+
+-- Airline configuration
+vim.g.airline_solarized_bg = 'dark'
+vim.g.airline_powerline_fonts = 1
+vim.g['airline#extensions#tabline#enabled'] = 1
+vim.g['airline#extensions#tabline#left_sep'] = ' '
+vim.g['airline#extensions#tabline#left_alt_sep'] = '|'
+vim.g['airline#extensions#tabline#formatter'] = 'unique_tail'
+
+-- Show full file path in status line
+vim.g['airline_section_c'] = '%F'
+
+-- NERDTree configuration
+vim.g.NERDTreeQuitOnOpen = 1
+vim.g.NERDTreeShowHidden = 1
+
+-- ================================
+-- Auto-commands
+-- ================================
+
+-- Auto-create parent directories when saving
+vim.api.nvim_create_autocmd('BufWritePre', {
+  callback = function()
+    local dir = vim.fn.expand('%:h')
+    if vim.fn.isdirectory(dir) == 0 then
+      vim.fn.mkdir(dir, 'p')
+    end
+  end
+})
+
+-- ================================
+-- Key Mappings
+-- ================================
+
+-- Set leader key
+vim.g.mapleader = ','
+
+-- Quick file explorer
+vim.keymap.set('n', '<leader>n', ':NERDTreeToggle<CR>', { noremap = true, silent = true })
+
+-- Find current file in NERDTree
+vim.keymap.set('n', '<C-f>', ':NERDTreeFind<CR>', { noremap = true, silent = true })
+
+-- Quick save
+vim.keymap.set('n', '<leader>w', ':w<CR>', { noremap = true, silent = true })
+
+-- Quick quit
+vim.keymap.set('n', '<leader>q', ':q<CR>', { noremap = true, silent = true })
+
+-- Split navigation
+vim.keymap.set('n', '<C-h>', '<C-w>h', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-j>', '<C-w>j', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-k>', '<C-w>k', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-l>', '<C-w>l', { noremap = true, silent = true })
+
+-- Buffer navigation
+vim.keymap.set('n', '<leader>bn', ':bnext<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>bp', ':bprevious<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>bd', ':bdelete<CR>', { noremap = true, silent = true })
+
+-- Tab navigation
+vim.keymap.set('n', '<C-Right>', ':tabnext<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-Left>', ':tabprevious<CR>', { noremap = true, silent = true })
+
+-- Command-line completion navigation
+vim.keymap.set('c', '<Up>', '<C-p>', { noremap = true })
+vim.keymap.set('c', '<Down>', '<C-n>', { noremap = true })
+vim.keymap.set('c', '<Left>', '<Left>', { noremap = true })
+vim.keymap.set('c', '<Right>', '<Right>', { noremap = true })
+
+-- FZF mappings
+vim.keymap.set('n', '<leader>f', ':Files<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>b', ':Buffers<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>g', ':Rg<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>l', ':Lines<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>h', ':History<CR>', { noremap = true, silent = true })
+
+-- Clear search highlighting with double Esc
+vim.keymap.set('n', '<Esc><Esc>', ':nohlsearch<CR>', { noremap = true, silent = true })
+
+-- ================================
+-- Coc.nvim Configuration
+-- ================================
+
+-- Make Enter accept selected completion item or insert newline with proper formatting
+-- vim.keymap.set('i', '<CR>', [[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"]], { expr = true, noremap = true, silent = true })

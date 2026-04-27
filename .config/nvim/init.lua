@@ -1,6 +1,11 @@
 -- ================================
 -- Basic Settings
 -- ================================
+-- regex strings related
+vim.o.synmaxcol = 3000
+
+-- Skip polyglot's JSON bundle; we disable JSON syntax highlighting below
+vim.g.polyglot_disabled = { 'json' }
 
 -- Clipboard integration
 vim.opt.clipboard = 'unnamedplus'
@@ -112,6 +117,24 @@ vim.api.nvim_create_autocmd('BufWritePre', {
       vim.fn.mkdir(dir, 'p')
     end
   end
+})
+
+-- FileType patterns match &filetype, not "*.k"; we key *.k off the filename suffix.
+-- json/jsonc: no regex syntax.
+-- *.k: keep KCL syntax but scan whole line (avoids "half highlighted" strings when global
+-- synmaxcol is 3000). True "plain text inside long strings only" needs Tree-sitter + custom code.
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = '*',
+  callback = function()
+    local ft = vim.bo.filetype
+    if ft == 'json' or ft == 'jsonc' then
+      vim.cmd('setlocal syntax=OFF')
+    elseif vim.fn.expand('%:e') == 'k' then
+      vim.cmd('setlocal synmaxcol=0')
+    else
+      vim.cmd('setlocal synmaxcol<')
+    end
+  end,
 })
 
 -- ================================

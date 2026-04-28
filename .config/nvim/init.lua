@@ -156,6 +156,12 @@ vim.keymap.set('n', '<leader>w', ':w<CR>', { noremap = true, silent = true })
 -- Quick quit
 vim.keymap.set('n', '<leader>q', ':q<CR>', { noremap = true, silent = true })
 
+-- Half-page scroll with Shift+Up/Down
+vim.keymap.set('n', '<S-Up>', '10k', { noremap = true, silent = true })
+vim.keymap.set('n', '<S-Down>', '10j', { noremap = true, silent = true })
+vim.keymap.set('v', '<S-Up>', '10k', { noremap = true, silent = true })
+vim.keymap.set('v', '<S-Down>', '10j', { noremap = true, silent = true })
+
 -- Split navigation
 vim.keymap.set('n', '<C-h>', '<C-w>h', { noremap = true, silent = true })
 vim.keymap.set('n', '<C-j>', '<C-w>j', { noremap = true, silent = true })

@@ -190,6 +190,14 @@ vim.keymap.set('n', '<leader>g', ':Rg<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>l', ':Lines<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>h', ':History<CR>', { noremap = true, silent = true })
 
+-- Override :Rg to include hidden files/dirs (e.g. .github), but skip .git/
+vim.cmd([[
+  command! -bang -nargs=* Rg
+    \ call fzf#vim#grep(
+    \   'rg --column --line-number --no-heading --color=always --smart-case --hidden --glob "!.git/" -- '.shellescape(<q-args>),
+    \   1, fzf#vim#with_preview(), <bang>0)
+]])
+
 -- Clear search highlighting with double Esc
 vim.keymap.set('n', '<Esc><Esc>', ':nohlsearch<CR>', { noremap = true, silent = true })
 

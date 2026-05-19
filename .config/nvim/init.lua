@@ -184,9 +184,9 @@ vim.keymap.set('c', '<Left>', '<Left>', { noremap = true })
 vim.keymap.set('c', '<Right>', '<Right>', { noremap = true })
 
 -- FZF mappings
-vim.keymap.set('n', '<leader>f', ':Files<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>f', ':Files!<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>b', ':Buffers<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>g', ':Rg<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>g', ':Rg!<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>l', ':Lines<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>h', ':History<CR>', { noremap = true, silent = true })
 
@@ -207,3 +207,10 @@ vim.keymap.set('n', '<Esc><Esc>', ':nohlsearch<CR>', { noremap = true, silent = 
 
 -- Make Enter accept selected completion item or insert newline with proper formatting
 -- vim.keymap.set('i', '<CR>', [[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"]], { expr = true, noremap = true, silent = true })
+
+-- Navigation
+vim.keymap.set('n', 'gd', '<Plug>(coc-definition)', { silent = true })
+vim.keymap.set('n', 'gD', '<Plug>(coc-declaration)', { silent = true })
+vim.keymap.set('n', 'gy', '<Plug>(coc-type-definition)', { silent = true })
+vim.keymap.set('n', 'gi', '<Plug>(coc-implementation)', { silent = true })
+vim.keymap.set('n', 'gr', '<Plug>(coc-references)', { silent = true })

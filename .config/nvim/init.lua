@@ -37,6 +37,7 @@ vim.opt.splitright = true
 
 -- Performance
 vim.opt.ttyfast = true             -- Faster scrolling
+vim.opt.updatetime = 500           -- CursorHold/swap idle delay in ms (default 4000)
 
 -- File type detection
 vim.cmd('filetype plugin indent on')
@@ -214,3 +215,9 @@ vim.keymap.set('n', 'gD', '<Plug>(coc-declaration)', { silent = true })
 vim.keymap.set('n', 'gy', '<Plug>(coc-type-definition)', { silent = true })
 vim.keymap.set('n', 'gi', '<Plug>(coc-implementation)', { silent = true })
 vim.keymap.set('n', 'gr', '<Plug>(coc-references)', { silent = true })
+
+-- Diagnostics
+vim.keymap.set('n', '<leader>d', function() vim.fn.CocActionAsync('diagnosticInfo') end, { silent = true })
+vim.keymap.set('n', '[d', '<Plug>(coc-diagnostic-prev)', { silent = true })
+vim.keymap.set('n', ']d', '<Plug>(coc-diagnostic-next)', { silent = true })
+vim.keymap.set('n', '<leader>D', ':CocDiagnostics<CR>', { noremap = true, silent = true })

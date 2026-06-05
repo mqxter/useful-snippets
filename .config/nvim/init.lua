@@ -174,9 +174,12 @@ vim.keymap.set('n', '<leader>bn', ':bnext<CR>', { noremap = true, silent = true 
 vim.keymap.set('n', '<leader>bp', ':bprevious<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>bd', ':bdelete<CR>', { noremap = true, silent = true })
 
--- Tab navigation
-vim.keymap.set('n', '<C-Right>', ':tabnext<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<C-Left>', ':tabprevious<CR>', { noremap = true, silent = true })
+-- Buffer navigation
+vim.keymap.set('n', '<C-Right>', ':bnext<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-Left>', ':bprevious<CR>', { noremap = true, silent = true })
+-- Previous tab navigation (kept for rollback):
+-- vim.keymap.set('n', '<C-Right>', ':tabnext<CR>', { noremap = true, silent = true })
+-- vim.keymap.set('n', '<C-Left>', ':tabprevious<CR>', { noremap = true, silent = true })
 
 -- Command-line completion navigation
 vim.keymap.set('c', '<Up>', '<C-p>', { noremap = true })
@@ -206,6 +209,10 @@ vim.keymap.set('n', '<Esc><Esc>', ':nohlsearch<CR>', { noremap = true, silent = 
 -- Coc.nvim Configuration
 -- ================================
 
+-- Auto-install missing coc extensions on startup
+-- coc-pyright: Python LSP (completion, go-to-definition, diagnostics, hover)
+vim.g.coc_global_extensions = { 'coc-go', 'coc-pyright' }
+
 -- Make Enter accept selected completion item or insert newline with proper formatting
 -- vim.keymap.set('i', '<CR>', [[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"]], { expr = true, noremap = true, silent = true })
 
@@ -215,6 +222,15 @@ vim.keymap.set('n', 'gD', '<Plug>(coc-declaration)', { silent = true })
 vim.keymap.set('n', 'gy', '<Plug>(coc-type-definition)', { silent = true })
 vim.keymap.set('n', 'gi', '<Plug>(coc-implementation)', { silent = true })
 vim.keymap.set('n', 'gr', '<Plug>(coc-references)', { silent = true })
+
+-- Hover: show type / signature / docs popup
+vim.keymap.set('n', 'K', function()
+  if vim.fn.CocAction('hasProvider', 'hover') then
+    vim.fn.CocActionAsync('doHover')
+  else
+    vim.cmd('normal! K')
+  end
+end, { silent = true })
 
 -- Diagnostics
 vim.keymap.set('n', '<leader>d', function() vim.fn.CocActionAsync('diagnosticInfo') end, { silent = true })

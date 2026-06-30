@@ -1,3 +1,6 @@
+-- To load this git-tracked config, point ~/.config/nvim/init.lua at it with:
+--   dofile('/Users/maxpopov/source-control/useful-snippets/.config/nvim/init.lua')
+--
 -- ================================
 -- Basic Settings
 -- ================================

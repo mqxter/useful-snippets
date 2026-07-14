@@ -106,7 +106,7 @@ vim.g['airline#extensions#tabline#formatter'] = 'unique_tail'
 vim.g['airline_section_c'] = '%F'
 
 -- NERDTree configuration
-vim.g.NERDTreeQuitOnOpen = 1
+vim.g.NERDTreeQuitOnOpen = 0
 vim.g.NERDTreeShowHidden = 1
 
 -- ================================
@@ -137,6 +137,17 @@ vim.api.nvim_create_autocmd('FileType', {
       vim.cmd('setlocal synmaxcol=0')
     else
       vim.cmd('setlocal synmaxcol<')
+    end
+  end,
+})
+
+-- Open the file tree on the side when starting with a file, keeping focus on the file
+vim.api.nvim_create_autocmd('VimEnter', {
+  callback = function()
+    local firstArgument = vim.fn.argv(0)
+    if vim.fn.argc() > 0 and vim.fn.isdirectory(firstArgument) == 0 then
+      vim.cmd('NERDTree')
+      vim.cmd('wincmd p')
     end
   end,
 })

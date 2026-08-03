@@ -204,14 +204,15 @@ vim.keymap.set('c', '<Right>', '<Right>', { noremap = true })
 -- FZF mappings
 vim.keymap.set('n', '<leader>f', ':Files!<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>b', ':Buffers<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>g', ':Rg!<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>g', ':RG!<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>l', ':Lines<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>h', ':History<CR>', { noremap = true, silent = true })
 
--- Override :Rg to include hidden files/dirs (e.g. .github), skip .git/; on VimEnter so it wins over fzf.vim's default
+-- Override :Rg (static filter) and :RG (live, re-runs rg per keystroke) to include hidden files/dirs (e.g. .github), skip .git/; on VimEnter so they win over fzf.vim's defaults
 vim.api.nvim_create_autocmd('VimEnter', {
   callback = function()
     vim.cmd([[command! -bang -nargs=* Rg call fzf#vim#grep('rg --column --line-number --no-heading --color=always --smart-case --hidden --glob "!.git/" -- '.shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)]])
+    vim.cmd([[command! -bang -nargs=* RG call fzf#vim#grep2("rg --column --line-number --no-heading --color=always --smart-case --hidden --glob '!.git/' -- ", <q-args>, fzf#vim#with_preview(), <bang>0)]])
   end,
 })
 

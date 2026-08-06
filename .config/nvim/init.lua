@@ -172,10 +172,10 @@ vim.keymap.set('n', '<leader>w', ':w<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>q', ':q<CR>', { noremap = true, silent = true })
 
 -- Fast scroll with Shift+Up/Down
-vim.keymap.set('n', '<S-Up>', '5k', { noremap = true, silent = true })
-vim.keymap.set('n', '<S-Down>', '5j', { noremap = true, silent = true })
-vim.keymap.set('v', '<S-Up>', '5k', { noremap = true, silent = true })
-vim.keymap.set('v', '<S-Down>', '5j', { noremap = true, silent = true })
+vim.keymap.set('n', '<S-Up>', '3k', { noremap = true, silent = true })
+vim.keymap.set('n', '<S-Down>', '3j', { noremap = true, silent = true })
+vim.keymap.set('v', '<S-Up>', '3k', { noremap = true, silent = true })
+vim.keymap.set('v', '<S-Down>', '3j', { noremap = true, silent = true })
 
 -- Split navigation
 vim.keymap.set('n', '<C-h>', '<C-w>h', { noremap = true, silent = true })

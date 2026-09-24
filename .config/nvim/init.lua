@@ -41,6 +41,7 @@ vim.opt.splitright = true
 -- Performance
 vim.opt.ttyfast = true             -- Faster scrolling
 vim.opt.updatetime = 500           -- CursorHold/swap idle delay in ms (default 4000)
+vim.opt.timeoutlen = 400           -- Pause after a prefix key before which-key opens (default 1000)
 
 -- File type detection
 vim.cmd('filetype plugin indent on')
@@ -83,6 +84,9 @@ vim.cmd([[Plug 'tpope/vim-fugitive']])
 -- Fuzzy finder
 vim.cmd([[Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }]])
 vim.cmd([[Plug 'junegunn/fzf.vim']])
+
+-- Keymap help popup
+vim.cmd([[Plug 'folke/which-key.nvim']])
 
 vim.call('plug#end')
 
@@ -141,6 +145,17 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+-- "0#" in indentkeys re-triggers indentexpr when "#" is typed as the first non-blank
+-- char on a line (meant for C preprocessor directives); yaml's indent script reacts by
+-- shifting comments a level deeper than surrounding list items. Drop just that trigger
+-- so "#" keeps whatever indent it already had, leaving the rest of yaml's smart indent intact.
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'yaml',
+  callback = function()
+    vim.opt_local.indentkeys:remove('0#')
+  end,
+})
+
 -- Open the file tree on the side when starting with a file, keeping focus on the file
 vim.api.nvim_create_autocmd('VimEnter', {
   callback = function()
@@ -160,37 +175,37 @@ vim.api.nvim_create_autocmd('VimEnter', {
 vim.g.mapleader = ','
 
 -- Quick file explorer
-vim.keymap.set('n', '<leader>n', ':NERDTreeToggle<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>n', ':NERDTreeToggle<CR>', { noremap = true, silent = true, desc = 'Toggle file tree' })
 
 -- Find current file in NERDTree
-vim.keymap.set('n', '<C-f>', ':NERDTreeFind<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-f>', ':NERDTreeFind<CR>', { noremap = true, silent = true, desc = 'Reveal file in tree' })
 
 -- Quick save
-vim.keymap.set('n', '<leader>w', ':w<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>w', ':w<CR>', { noremap = true, silent = true, desc = 'Save' })
 
 -- Quick quit
-vim.keymap.set('n', '<leader>q', ':q<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>q', ':q<CR>', { noremap = true, silent = true, desc = 'Quit' })
 
 -- Fast scroll with Shift+Up/Down
-vim.keymap.set('n', '<S-Up>', '3k', { noremap = true, silent = true })
-vim.keymap.set('n', '<S-Down>', '3j', { noremap = true, silent = true })
-vim.keymap.set('v', '<S-Up>', '3k', { noremap = true, silent = true })
-vim.keymap.set('v', '<S-Down>', '3j', { noremap = true, silent = true })
+vim.keymap.set('n', '<S-Up>', '4k', { noremap = true, silent = true, desc = 'Up 4 lines' })
+vim.keymap.set('n', '<S-Down>', '4j', { noremap = true, silent = true, desc = 'Down 4 lines' })
+vim.keymap.set('v', '<S-Up>', '4k', { noremap = true, silent = true, desc = 'Up 4 lines' })
+vim.keymap.set('v', '<S-Down>', '4j', { noremap = true, silent = true, desc = 'Down 4 lines' })
 
 -- Split navigation
-vim.keymap.set('n', '<C-h>', '<C-w>h', { noremap = true, silent = true })
-vim.keymap.set('n', '<C-j>', '<C-w>j', { noremap = true, silent = true })
-vim.keymap.set('n', '<C-k>', '<C-w>k', { noremap = true, silent = true })
-vim.keymap.set('n', '<C-l>', '<C-w>l', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-h>', '<C-w>h', { noremap = true, silent = true, desc = 'Window left' })
+vim.keymap.set('n', '<C-j>', '<C-w>j', { noremap = true, silent = true, desc = 'Window down' })
+vim.keymap.set('n', '<C-k>', '<C-w>k', { noremap = true, silent = true, desc = 'Window up' })
+vim.keymap.set('n', '<C-l>', '<C-w>l', { noremap = true, silent = true, desc = 'Window right' })
 
 -- Buffer navigation
-vim.keymap.set('n', '<leader>bn', ':bnext<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>bp', ':bprevious<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>bd', ':bdelete<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>bn', ':bnext<CR>', { noremap = true, silent = true, desc = 'Next buffer' })
+vim.keymap.set('n', '<leader>bp', ':bprevious<CR>', { noremap = true, silent = true, desc = 'Previous buffer' })
+vim.keymap.set('n', '<leader>bd', ':bdelete<CR>', { noremap = true, silent = true, desc = 'Close buffer' })
 
 -- Buffer navigation
-vim.keymap.set('n', '<C-Right>', ':bnext<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<C-Left>', ':bprevious<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-Right>', ':bnext<CR>', { noremap = true, silent = true, desc = 'Next buffer' })
+vim.keymap.set('n', '<C-Left>', ':bprevious<CR>', { noremap = true, silent = true, desc = 'Previous buffer' })
 -- Previous tab navigation (kept for rollback):
 -- vim.keymap.set('n', '<C-Right>', ':tabnext<CR>', { noremap = true, silent = true })
 -- vim.keymap.set('n', '<C-Left>', ':tabprevious<CR>', { noremap = true, silent = true })
@@ -202,11 +217,11 @@ vim.keymap.set('c', '<Left>', '<Left>', { noremap = true })
 vim.keymap.set('c', '<Right>', '<Right>', { noremap = true })
 
 -- FZF mappings
-vim.keymap.set('n', '<leader>f', ':Files!<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>b', ':Buffers<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>g', ':RG!<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>l', ':Lines<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>h', ':History<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>f', ':Files!<CR>', { noremap = true, silent = true, desc = 'Find file' })
+vim.keymap.set('n', '<leader>b', ':Buffers<CR>', { noremap = true, silent = true, desc = 'Switch buffer' })
+vim.keymap.set('n', '<leader>g', ':RG!<CR>', { noremap = true, silent = true, desc = 'Grep project (live)' })
+vim.keymap.set('n', '<leader>l', ':Lines<CR>', { noremap = true, silent = true, desc = 'Search lines in buffers' })
+vim.keymap.set('n', '<leader>h', ':History<CR>', { noremap = true, silent = true, desc = 'Recent files' })
 
 -- Override :Rg (static filter) and :RG (live, re-runs rg per keystroke) to include hidden files/dirs (e.g. .github), skip .git/; on VimEnter so they win over fzf.vim's defaults
 vim.api.nvim_create_autocmd('VimEnter', {
@@ -217,7 +232,7 @@ vim.api.nvim_create_autocmd('VimEnter', {
 })
 
 -- Clear search highlighting with double Esc
-vim.keymap.set('n', '<Esc><Esc>', ':nohlsearch<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<Esc><Esc>', ':nohlsearch<CR>', { noremap = true, silent = true, desc = 'Clear search highlight' })
 
 -- ================================
 -- Coc.nvim Configuration
@@ -231,11 +246,11 @@ vim.g.coc_global_extensions = { 'coc-go', 'coc-pyright' }
 -- vim.keymap.set('i', '<CR>', [[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"]], { expr = true, noremap = true, silent = true })
 
 -- Navigation
-vim.keymap.set('n', 'gd', '<Plug>(coc-definition)', { silent = true })
-vim.keymap.set('n', 'gD', '<Plug>(coc-declaration)', { silent = true })
-vim.keymap.set('n', 'gy', '<Plug>(coc-type-definition)', { silent = true })
-vim.keymap.set('n', 'gi', '<Plug>(coc-implementation)', { silent = true })
-vim.keymap.set('n', 'gr', '<Plug>(coc-references)', { silent = true })
+vim.keymap.set('n', 'gd', '<Plug>(coc-definition)', { silent = true, desc = 'Go to definition' })
+vim.keymap.set('n', 'gD', '<Plug>(coc-declaration)', { silent = true, desc = 'Go to declaration' })
+vim.keymap.set('n', 'gy', '<Plug>(coc-type-definition)', { silent = true, desc = 'Go to type definition' })
+vim.keymap.set('n', 'gi', '<Plug>(coc-implementation)', { silent = true, desc = 'Go to implementation' })
+vim.keymap.set('n', 'gr', '<Plug>(coc-references)', { silent = true, desc = 'List references' })
 
 -- Hover: show type / signature / docs popup
 vim.keymap.set('n', 'K', function()
@@ -244,10 +259,27 @@ vim.keymap.set('n', 'K', function()
   else
     vim.cmd('normal! K')
   end
-end, { silent = true })
+end, { silent = true, desc = 'Hover: type / signature / docs' })
 
 -- Diagnostics
-vim.keymap.set('n', '<leader>d', function() vim.fn.CocActionAsync('diagnosticInfo') end, { silent = true })
-vim.keymap.set('n', '[d', '<Plug>(coc-diagnostic-prev)', { silent = true })
-vim.keymap.set('n', ']d', '<Plug>(coc-diagnostic-next)', { silent = true })
-vim.keymap.set('n', '<leader>D', ':CocDiagnostics<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>d', function() vim.fn.CocActionAsync('diagnosticInfo') end, { silent = true, desc = 'Diagnostic on this line' })
+vim.keymap.set('n', '[d', '<Plug>(coc-diagnostic-prev)', { silent = true, desc = 'Previous diagnostic' })
+vim.keymap.set('n', ']d', '<Plug>(coc-diagnostic-next)', { silent = true, desc = 'Next diagnostic' })
+vim.keymap.set('n', '<leader>D', ':CocDiagnostics<CR>', { noremap = true, silent = true, desc = 'Diagnostics list' })
+
+-- ================================
+-- which-key: keymap help popup
+-- ================================
+-- Press a prefix (, g [ ]) and pause to see its mappings; ,? lists everything.
+
+local whichKeyLoaded, whichKey = pcall(require, 'which-key')
+if whichKeyLoaded then
+  whichKey.setup({ preset = 'modern' })
+  whichKey.add({
+    { '<leader>b', group = 'Buffers' },
+    { 'g', group = 'Go to' },
+    { '[', group = 'Previous' },
+    { ']', group = 'Next' },
+  })
+  vim.keymap.set('n', '<leader>?', function() whichKey.show({ global = true }) end, { desc = 'All keymaps' })
+end

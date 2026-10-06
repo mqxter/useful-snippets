@@ -167,6 +167,35 @@ vim.api.nvim_create_autocmd('VimEnter', {
   end,
 })
 
+-- Resize the file tree to fit its longest visible entry, capped at a third of the screen
+local function fitFileTreeWidth(treeBuffer)
+  local treeWindow = vim.fn.bufwinid(treeBuffer)
+  if treeWindow == -1 then
+    return
+  end
+  local longestEntryWidth = 0
+  for _, line in ipairs(vim.api.nvim_buf_get_lines(treeBuffer, 0, -1, false)) do
+    longestEntryWidth = math.max(longestEntryWidth, vim.fn.strdisplaywidth(line))
+  end
+  local minimumWidth = 31
+  local maximumWidth = math.floor(vim.o.columns / 3)
+  local fittedWidth = math.min(math.max(longestEntryWidth + 1, minimumWidth), maximumWidth)
+  vim.api.nvim_win_set_width(treeWindow, fittedWidth)
+end
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'nerdtree',
+  callback = function(event)
+    vim.api.nvim_create_autocmd({ 'BufWinEnter', 'TextChanged' }, {
+      buffer = event.buf,
+      callback = function()
+        fitFileTreeWidth(event.buf)
+      end,
+    })
+    fitFileTreeWidth(event.buf)
+  end,
+})
+
 -- ================================
 -- Key Mappings
 -- ================================
